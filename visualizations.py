@@ -4,10 +4,27 @@ import plotly.express as px
 def sales_over_time(df):
     temp = df.copy()
     temp["date"] = pd.to_datetime(temp["date"], errors="coerce")
-    grouped = temp.groupby(temp["date"].dt.date, as_index=False)["totalprice"].sum()
+
+    grouped = (
+        temp.groupby(temp["date"].dt.date)["totalprice"]
+        .sum()
+        .reset_index()
+    )
+
     grouped.columns = ["date", "sales"]
-    fig = px.line(grouped, x="date", y="sales", title="Sales Over Time")
-    fig.update_layout(xaxis_title="Date", yaxis_title="Sales")
+
+    fig = px.line(
+        grouped,
+        x="date",
+        y="sales",
+        title="Sales Over Time"
+    )
+
+    fig.update_layout(
+        xaxis_title="Date",
+        yaxis_title="Sales"
+    )
+
     return fig
 
 def sales_by_product(df):
